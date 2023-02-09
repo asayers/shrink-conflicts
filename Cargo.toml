@@ -4,6 +4,9 @@ description = "Tries to minimise diff3-style git conflicts"
 version = "0.1.0"
 edition = "2021"
 readme = "README.md"
+authors = ["Alex Sayers <alex@asayers.com>"]
+license = "Unlicense"
+repository = "https://github.com/asayers/shrink-conflicts"
 
 [dependencies]
 anyhow = "1.0.68"
