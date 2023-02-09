@@ -1,9 +1,9 @@
 [package]
 name = "shrink-conflicts"
+description = "Tries to minimise diff3-style git conflicts"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.68"
