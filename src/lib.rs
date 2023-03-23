@@ -55,6 +55,39 @@ pub fn run(file: String) -> anyhow::Result<String> {
             State::Context => writeln!(output, "{l}")?,
         }
     }
+    match state {
+        State::Context => (),
+        State::Left => {
+            writeln!(output, "<<<<<<<")?;
+            for l in conflict.left {
+                writeln!(output, "{l}")?;
+            }
+        }
+        State::Common => {
+            writeln!(output, "<<<<<<<")?;
+            for l in conflict.left {
+                writeln!(output, "{l}")?;
+            }
+            writeln!(output, "|||||||")?;
+            for l in conflict.common {
+                writeln!(output, "{l}")?;
+            }
+        }
+        State::Right => {
+            writeln!(output, "<<<<<<<")?;
+            for l in conflict.left {
+                writeln!(output, "{l}")?;
+            }
+            writeln!(output, "|||||||")?;
+            for l in conflict.common {
+                writeln!(output, "{l}")?;
+            }
+            writeln!(output, "=======")?;
+            for l in conflict.right {
+                writeln!(output, "{l}")?;
+            }
+        }
+    }
     if let Some(c) = file.as_bytes().last() {
         if *c != b'\n' {
             output.remove(output.len() - 1);
