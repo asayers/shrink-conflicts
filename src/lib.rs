@@ -1,4 +1,3 @@
-use anyhow::ensure;
 use std::fmt::Display;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -18,29 +17,33 @@ pub fn run(file: String) -> anyhow::Result<String> {
         if l.len() >= 7 {
             match &l[..7] {
                 "<<<<<<<" => {
-                    ensure!(state == State::Context);
-                    state = State::Left;
-                    continue;
+                    if state == State::Context {
+                        state = State::Left;
+                        continue;
+                    }
                 }
                 "|||||||" => {
-                    ensure!(state == State::Left);
-                    state = State::Common;
-                    continue;
+                    if state == State::Left {
+                        state = State::Common;
+                        continue;
+                    }
                 }
                 "=======" => {
-                    ensure!(state == State::Common);
-                    state = State::Right;
-                    continue;
+                    if state == State::Common {
+                        state = State::Right;
+                        continue;
+                    }
                 }
                 ">>>>>>>" => {
-                    ensure!(state == State::Right);
-                    state = State::Context;
+                    if state == State::Right {
+                        state = State::Context;
 
-                    conflict.minimise();
-                    write!(output, "{conflict}")?;
-                    conflict.clear();
+                        conflict.minimise();
+                        write!(output, "{conflict}")?;
+                        conflict.clear();
 
-                    continue;
+                        continue;
+                    }
                 }
                 _ => (),
             }
