@@ -34,6 +34,30 @@ pub fn run(file: String) -> anyhow::Result<String> {
                         continue;
                     }
                 }
+                "+++++++" => match l.split_once(' ') {
+                    Some((_, "Contents of side #1")) => {
+                        if state == State::Left {
+                            state = State::Left;
+                            continue;
+                        }
+                    }
+                    Some((_, "Contents of side #2")) => {
+                        if state == State::Common {
+                            state = State::Right;
+                            continue;
+                        }
+                    }
+                    _ => (),
+                },
+                "-------" => match l.split_once(' ') {
+                    Some((_, "Contents of base")) => {
+                        if state == State::Left {
+                            state = State::Common;
+                            continue;
+                        }
+                    }
+                    _ => (),
+                },
                 ">>>>>>>" => {
                     if state == State::Right {
                         state = State::Context;
@@ -44,6 +68,12 @@ pub fn run(file: String) -> anyhow::Result<String> {
 
                         continue;
                     }
+                }
+                "%%%%%%%" => {
+                    eprintln!(
+                        "WARN: jj's \"diff\"-style conflict markers are not \
+                        supported. Set conflict-marker-style=\"snapshot\"."
+                    );
                 }
                 _ => (),
             }
