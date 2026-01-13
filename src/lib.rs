@@ -47,17 +47,24 @@ pub fn run(file: String) -> anyhow::Result<String> {
                             continue;
                         }
                     }
-                    _ => (),
-                },
-                "-------" => match l.split_once(' ') {
-                    Some((_, "Contents of base")) => {
-                        if state == State::Left {
-                            state = State::Common;
+                    _ => match state {
+                        State::Left => continue,
+                        State::Common => {
+                            state = State::Right;
                             continue;
                         }
-                    }
-                    _ => (),
+                        State::Right | State::Context => eprintln!(
+                            "WARN: This looks like a jj conflict separator, \
+                            but it's in the wrong place"
+                        ),
+                    },
                 },
+                "-------" => {
+                    if state == State::Left {
+                        state = State::Common;
+                        continue;
+                    }
+                }
                 ">>>>>>>" => {
                     if state == State::Right {
                         state = State::Context;
